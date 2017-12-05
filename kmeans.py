@@ -32,6 +32,7 @@ class kmeans:
 		self.clusters = clusters
 		#compute every combination of centroids
 		self.centroids = self.getCentroids(k)
+		print("The initial partition of centroids randomly picked are:")
 		print(self.centroids)
 
 	def getPoints(self):
@@ -148,81 +149,3 @@ km.computeDistances()
 km.arrangeClusters()
 print("The clusters computed are: ")
 print(km.clusters)
-#find furthest samples
-
-minDistance = -1
-centroids = []
-clusters = [[],[]]
-#TODO: use random in this bitch
-for i in range(0, 2):
-	c = random.randint(0, len(points))
-	while c in centroids:
-		c = random.randint(0, len(points))
-	centroids += [c]
-
-print(centroids)
-#initialize array
-distanceClusters = []
-clusterMeans = []
-clusterMeans += [points[centroids[0]]]
-clusterMeans += [points[centroids[1]]]
-clusters[0] += [centroids[0]]
-clusters[1] += [centroids[1]]
-#compute means
-for i in range(0, len(points)):
-	distanceClusters += [kmeans.distance(points[centroids[0]], points[i])]
-	distanceClusters += [kmeans.distance(points[centroids[1]], points[i])]
-	if distanceClusters[0] < distanceClusters[1]:
-		if i != centroids[0] and i != centroids[1]:
-			clusters[0] += [i]
-			clusterMeans[0] = meanPoint(clusters[0], points)
-	else:
-		if i != centroids[0] and i != centroids[1]:
-			clusters[1] += [i]
-			clusterMeans[1] = meanPoint(clusters[1], points)
-	#reinitialize array
-	distanceClusters = []
-
-#compute clusters means
-
-clusterDistances = [[], []]
-for i in range(0, len(points)):
-	clusterDistances[0] += [kmeans.distance(points[i], clusterMeans[0])]
-	clusterDistances[1] += [kmeans.distance(points[i], clusterMeans[1])]
-
-#rearrange clusters
-changed = True
-while changed:
-	newClusters = [[], []]
-	changed = False
-	for i in range(0, len(points)):
-		minCluster = -1
-		minValue = -1
-		for j in range(0, len(clusterDistances)):
-			if minValue == -1:
-				minValue = clusterDistances[j][i]
-				minCluster = j
-			elif minValue > clusterDistances[j][i]:
-				minValue = clusterDistances[j][i]
-				minCluster = j
-		#check if is the same cluster
-		if not i in clusters[minCluster]:
-			changed = True
-
-		#update newClusters
-		newClusters[minCluster] += [i]
-
-	clusters = newClusters
-	#compute the means again
-
-	clusterMeans = [meanPoint(clusters[0], points), meanPoint(clusters[1], points)]
-
-	#compute clusters means
-
-	clusterDistances = [[], []]
-	for i in range(0, len(points)):
-		clusterDistances[0] += [kmeans.distance(points[i], clusterMeans[0])]
-		clusterDistances[1] += [kmeans.distance(points[i], clusterMeans[1])]
-
-print("The clusters computed are: ")
-print(clusters)
