@@ -2,7 +2,7 @@
 KMEANS
 
 
-##This project was brought to you by:
-*David Calhas
-*Andreia Rogério
-*Francisca Ribeiro
+## This project was brought to you by:
+* David Calhas
+* Andreia Rogério
+* Francisca Ribeiro
