@@ -35,12 +35,6 @@ class kmeans:
 		print("The initial partition of centroids randomly picked are:")
 		print(self.centroids)
 
-	def getPoints(self):
-		return self.points
-
-	def run(k):
-		return k
-
 	def distance(p1, p2):
 		sum = 0.0
 		for i in range(0, len(p1)):
