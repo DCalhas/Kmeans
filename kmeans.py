@@ -119,17 +119,20 @@ class kmeans:
 
 			self.computeDistances()
 
-
-data = open("formatted_data.arff")
+numberClusters = int(sys.argv[1])
+numberRows = int(sys.argv[2])
+numberColumns = int(sys.argv[3])
+data = open(sys.argv[4])
 
 lines = data.readlines()
 
 points = []
-
+classes = []
 for line in lines:
 	missing_values = False
 	if not missing_values and not "@RELATION" in line and not "@ATTRIBUTE" in line and not "@DATA" in line and line != "\n" and line != "" and line != " ":
 		values = line.split(",")[:-1]
+		classes += [line.split(",")[-1][:-1]]
 		for i in range(0, len(values)):
 			if values[i] == "?":
 				missing_values = True
@@ -139,9 +142,18 @@ for line in lines:
 			points.append(values)
 
 
-km = kmeans(1, points, 2)
+km = kmeans(1, points, numberClusters)
 km.computeMeanCentroids()
 km.computeDistances()
 km.arrangeClusters()
 print("The clusters computed are: ")
 print(km.clusters)
+
+print("[")
+for i in range(0, len(km.clusters)):
+	print("[", end = "")
+	for j in range(0, len(km.clusters[i])):
+		print(classes[km.clusters[i][j]], end = ",")
+	print("]")
+
+print("]")
