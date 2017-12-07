@@ -1,6 +1,7 @@
 import os
 import numpy
 import random
+import sys
 
 #number of clusters arg 1
 
@@ -118,7 +119,8 @@ class kmeans:
 
 			self.computeDistances()
 
-data = open("Lymphoma45x4026+2classes.arff")
+
+data = open("formatted_data.arff")
 
 lines = data.readlines()
 
