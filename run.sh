@@ -1,2 +1,2 @@
 #!/bin/bash
-python kmeans.py 2 3 4 formatted_data.arff
+python kmeans.py 2 45 50 formatted_data.arff

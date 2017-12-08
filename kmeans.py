@@ -16,6 +16,57 @@ def meanPoint(cluster, points):
 		meanPoint[i] = meanPoint[i] / len(cluster)
 	return meanPoint
 
+
+def computePrecisionRecall(clusters, classes):
+	mode = []
+	classifiy = [0,0]
+	for i in range(0, len(km.clusters)):
+		mode += [[0, 0]]
+
+	for i in range(0, len(km.clusters)):
+		for j in range(0, len(km.clusters[i])):
+			if(classes[km.clusters[i][j]] == "ACL"):
+				mode[i][0] += 1
+			else:
+				mode[i][1] += 1
+
+	#defining the positive as ACL
+	if mode[0][0] > mode[0][1]:
+		classifiy[0] = 1
+		print("%s %s" % ("ACL", "GCL"))
+	else:
+		classifiy[1] = 1
+		print("%s %s" % ("GCL", "ACL"))
+
+	print(mode[0][0])
+	print(mode[0][1])
+	print(mode[1][0])
+	print(mode[1][1])
+
+
+	#precision
+	if mode[0][0] > mode[0][1]:
+		print("Precision for cluster 0: %f" % (mode[0][0] / (mode[0][0] + mode[0][1])))
+		print("Precision for cluster 1: %f" % (mode[1][1] / (mode[1][0] + mode[1][1])))
+	else:
+		print("Precision for cluster 0: %f" % (mode[0][1] / (mode[0][1] + mode[0][0])))
+		print("Precision for cluster 1: %f" % (mode[1][0] / (mode[1][0] + mode[1][1])))
+
+	print("")
+	print("")
+	#recall
+	if mode[0][0] > mode[0][1]:
+		print("Recall for cluster 0: %f" % (mode[0][0] / (mode[0][0] + mode[1][0])))
+		print("Recall for cluster 1: %f" % (mode[1][1] / (mode[1][1] + mode[0][1])))
+	else:
+		print("Recall for cluster 0: %f" % (mode[0][1] / (mode[0][1] + mode[1][1])))
+		print("Recall for cluster 1: %f" % (mode[1][0] / (mode[1][0] + mode[0][0])))
+
+
+	return mode
+
+
+
 class kmeans:
 
 	def __init__(self, arg, points, k):
@@ -86,6 +137,7 @@ class kmeans:
 
 	def arrangeClusters(self):
 		changed = True
+		iteration = 0
 		while changed:
 			newClusters = []
 			for i in range(0, len(self.clusters)):
@@ -116,8 +168,11 @@ class kmeans:
 			for i in range(0, len(self.clusters)):
 				self.clusterMeans += [meanPoint(self.clusters[i], self.points)]
 			#compute clusters means
-
+			
 			self.computeDistances()
+			iteration += 1
+			if iteration > 1000:
+				break
 
 numberClusters = int(sys.argv[1])
 numberRows = int(sys.argv[2])
@@ -139,7 +194,9 @@ for line in lines:
 			else:
 				values[i] = float(values[i])
 		if not missing_values:
-			points.append(values)
+			points.append(values[0:numberColumns])
+		if len(points) == numberRows:
+			break
 
 
 km = kmeans(1, points, numberClusters)
@@ -148,6 +205,12 @@ km.computeDistances()
 km.arrangeClusters()
 print("The clusters computed are: ")
 print(km.clusters)
+
+
+
+computePrecisionRecall(km.clusters, classes)
+
+
 
 print("[")
 for i in range(0, len(km.clusters)):
